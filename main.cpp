@@ -3,7 +3,7 @@
 #include "pub_include.h"
 #include "link.h"
 #include "robot.h"
-#include "six_fod_robot.h"
+#include "six_dof_robot.h"
 #include "scara.h"
 
 
@@ -14,7 +14,7 @@ int main()
     Link link1(JOINT_REVOLUTE, 0, M_PI / 4, 0, 0);
     Link link2(JOINT_NONE, 0, 0, 10, 0);  // 原点位于末端点的虚杆
 
-    SixFODRobot robot;
+    SixDOFRobot robot;
     robot.addLink(link0);
     robot.addLink(link1);
     robot.addLink(link2);

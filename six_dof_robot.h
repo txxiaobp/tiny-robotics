@@ -3,11 +3,11 @@
 
 #include "robot.h"
 
-class SixFODRobot : public Robot
+class SixDOFRobot : public Robot
 {
 public:
-    SixFODRobot();
-    ~SixFODRobot() {}
+    SixDOFRobot();
+    ~SixDOFRobot() {}
     std::vector<double> inverseKinematics(Vector &endPos);
 };
 

@@ -11,7 +11,7 @@ SOURCES += \
         pd_controller.cpp \
         robot.cpp \
         scara.cpp \
-        six_fod_robot.cpp \
+        six_dof_robot.cpp \
         torcal_controller.cpp \
         transform_matrix.cpp
 
@@ -23,6 +23,6 @@ HEADERS += \
     pub_include.h \
     robot.h \
     scara.h \
-    six_fod_robot.h \
+    six_dof_robot.h \
     torcal_controller.h \
     transform_matrix.h
