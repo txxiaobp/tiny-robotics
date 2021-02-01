@@ -1,5 +1,7 @@
 #include "link.h"
+#include "transform_matrix.h"
 #include <cassert>
+#include <iostream>
 
 Link::Link(Joint_E jointType, double initXBias, double initXAngle, double initZBias, double initZAngle)
     : jointType(jointType)
@@ -69,4 +71,30 @@ void Link::move(double increment)
     default:
         assert(false);
     }
+}
+
+double Link::getJointVel() const
+{
+    return jointVel;
+}
+
+void Link::setJointVel(double jointVel)
+{
+    this->jointVel = jointVel;
+}
+
+Vector Link::getTransMatrix() const
+{
+    Matrix dhMatrix = TransformMatrix::rotate(AXIS_Z, getXAngle());
+
+    dhMatrix *= TransformMatrix::translate(AXIS_Z, getXBias());
+    dhMatrix *= TransformMatrix::rotate(AXIS_X, getZAngle());
+    dhMatrix *= TransformMatrix::translate(AXIS_X, getZBias());
+
+    return dhMatrix;
+}
+
+Joint_E Link::getJointType() const
+{
+    return jointType;
 }

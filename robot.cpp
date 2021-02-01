@@ -1,6 +1,7 @@
 #include "robot.h"
 #include "transform_matrix.h"
 #include <cassert>
+#include <iostream>
 
 Robot::Robot()
 {
@@ -24,10 +25,7 @@ Vector Robot::getEndPos() const
     for (auto vecIter = linkVec.begin() + 1; vecIter < linkVec.end(); ++vecIter)
     {
         // DH建模
-        dhMatrix *= TransformMatrix::rotate(AXIS_Z, vecIter->getXAngle());
-        dhMatrix *= TransformMatrix::translate(AXIS_Z, vecIter->getXBias());
-        dhMatrix *= TransformMatrix::rotate(AXIS_X, vecIter->getZAngle());
-        dhMatrix *= TransformMatrix::translate(AXIS_X, vecIter->getZBias());
+        dhMatrix *= vecIter->getTransMatrix();
     }
     return dhMatrix.getSubMatrix(0, 3, 3, 4);
 }
@@ -35,7 +33,12 @@ Vector Robot::getEndPos() const
 /* 计算末端速度 */
 Vector Robot::getEndVel() const
 {
+    Matrix jacobian = getJacobian();
+    std::vector<double> velVec = getJointVelocity();
 
+
+    Vector velVector(velVec);
+    return jacobian * velVector;
 }
 
 /* 设置机器人各关节的位置 */
@@ -48,13 +51,109 @@ void Robot::setJointIncrement(std::vector<double> incrementVec)
     }
 }
 
+/* 设置机器人各关节的速度 */
+void Robot::setJointVelocity(std::vector<double> velVec)
+{
+    assert(velVec.size() == linkVec.size() - 2); // 去掉头尾的虚杆
+    for (decltype (linkVec.size()) i = 1; i < linkVec.size() - 1; i++)
+    {
+        linkVec[i].setJointVel(velVec[i - 1]);
+    }
+}
+
+/* 计算机器人雅克比矩阵 */
+Vector Robot::getJacobian() const
+{
+    std::vector<Matrix> matrixVec;
+
+    std::vector<double> vec(4, 1);
+    Matrix tmpMatrix(vec, 4);
+    Matrix jacobian(6, linkVec.size() - 2);
+    for (decltype (linkVec.size()) i = 1; i < linkVec.size(); i++)
+    {
+        matrixVec.push_back(linkVec[i].getTransMatrix().reverseMatrix());
+    }
+    for (int i = matrixVec.size() - 2; i >= 0; i--)
+    {
+        matrixVec[i] *= matrixVec[i + 1];
+    }
+    matrixVec[0].showMatrix();
+
+    for (int i = 0; i < int(matrixVec.size()) - 1; i++)
+    {
+        Matrix diffMatrix = Robot::getDiffMatrix(matrixVec[i], linkVec[i + 1].getJointType());
+        jacobian.insert(diffMatrix, 0, 6, i, i + 1);
+    }
+
+    return jacobian;
+}
+
+
+Vector Robot::getDiffMatrix(const Matrix &matrix, Joint_E jointType)
+{
+    Matrix rTranspose = matrix.getSubMatrix(0, 3, 0, 3).transpose();
+    Vector position = matrix.getSubMatrix(0, 3, 3, 4);
+
+    double px = position[0];
+    double py = position[1];
+    double pz = position[2];
+    std::vector<double> vec{
+         0, -pz,  py,
+        pz,   0,  px,
+       -py,  px,   0,
+    };
+
+    Matrix antiSymmetryMatrix(vec, 3, 3);
+
+    antiSymmetryMatrix.showMatrix();
+
+
+    Matrix tmpMatrix = rTranspose * antiSymmetryMatrix;
+
+    tmpMatrix.showMatrix();
+
+
+    tmpMatrix *= -1;
+    Matrix diffMatrix(6, 6);
+    diffMatrix.insert(rTranspose, 0, 3, 0, 3);
+    diffMatrix.insert(rTranspose, 3, 6, 3, 6);
+    diffMatrix.insert(tmpMatrix, 0, 3, 3, 6);
+
+        diffMatrix.showMatrix();
+
+    Vector ret(6, 1);
+    if (jointType == JOINT_TRANSLATE)
+    {
+        ret = diffMatrix.getSubMatrix(0, 6, 2, 3);
+    }
+    else if (jointType == JOINT_REVOLUTE)
+    {
+        ret = diffMatrix.getSubMatrix(0, 6, 5, 6);
+    }
+    else
+    {
+        assert(false);
+    }
+    return ret;
+}
+
+std::vector<double> Robot::getJointVelocity() const
+{
+    std::vector<double> velVec;
+    for (decltype (linkVec.size()) i = 1; i < linkVec.size() - 1; i++)
+    {
+        velVec.push_back(linkVec[i].getJointVel());
+    }
+    return velVec;
+}
+
 /*
- * 逆向运动学，该机器人应满足Pieper准则，即：
- * 1. 三个相邻关节轴线交于一点
- * 2. 三个相邻关节轴线相互平行
+ * posConVec：在某时刻，连杆位置应满足的约束条件
+ * velConVec：在某时刻，连杆速度应满足的约束条件
  */
-std::vector<double> Robot::inverseKinematics(Vector &endPos)
+PlanVec Robot::motionPlan(ConVec &posConVec, ConVec &velConVec)
 {
 
 }
+
 

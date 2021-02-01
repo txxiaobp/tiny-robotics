@@ -54,7 +54,7 @@ public:
     void insert(const Matrix &matrix, int startRow, int endRow, int startCol, int endCol);
     Matrix getSubMatrix(int startRow, int endRow, int startCol, int endCol) const;
     Matrix reverseMatrix(); // 计算逆矩阵
-    Matrix transpose(); // 计算转置矩阵
+    Matrix transpose() const; // 计算转置矩阵
     int getDetermine(); // 计算行列式
     int getRank(); // 计算矩阵的秩
     bool isFullRank() { return getRank() == getCol(); }

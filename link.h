@@ -25,12 +25,18 @@ public:
     double getZAngle() const;
     void move(double increment);
 
+    double getJointVel() const;
+    void setJointVel(double jointVel);
+    Vector getTransMatrix() const;
+    Joint_E getJointType() const;
+
 private:
     Joint_E jointType; //相对于前一个连杆的运动型式
     double xBias;      //Z轴相对于前一个连杆X轴的偏置
     double xAngle;     //Z轴相对于前一个连杆X轴的夹角
     double zBias;      //Z轴相对于后一个连杆Z轴的偏置
     double zAngle;     //Z轴相对于后一个连杆Z轴的夹角
+    double jointVel;   //关节速度，对于转动关节，是角速度；对于移动关节，是速度
     bool fixed;
 
     Matrix inertialMatrix;

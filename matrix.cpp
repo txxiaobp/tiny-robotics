@@ -213,7 +213,7 @@ Matrix Matrix::reverseMatrix()
     return this->operator/(diagMatrix);
 }
 
-Matrix Matrix::transpose()
+Matrix Matrix::transpose() const
 {
     Matrix retMatrix(getCol(), getRow());
     for (int r = 0; r < getRow(); r++)
