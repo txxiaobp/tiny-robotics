@@ -52,7 +52,7 @@ Matrix::Matrix(std::vector<double> &vector, int row, int col)
 Matrix::Matrix(std::vector<double> &vector, int size)
     : elem(std::vector<std::vector<double>>(size, std::vector<double>(size, 0)))
 {
-    assert(size > 0 && int(vector.size()) < size);
+    assert(size > 0 && int(vector.size()) <= size);
 
     for (int row = 0; row < size; row++)
     {
@@ -373,12 +373,6 @@ Matrix Matrix::operator*(const double scaler) const
 
 Matrix Matrix::operator*(const Matrix& other) const
 {
-    if (getCol() != other.getRow())
-    {
-        assert(getCol() == other.getRow());
-    }
-
-
     assert(getCol() == other.getRow());
 
     int retRow = getRow();
@@ -400,6 +394,29 @@ Matrix Matrix::operator*(const Matrix& other) const
     }
 
     return retMatrix;
+}
+
+void Matrix::operator*=(const Matrix& other)
+{
+    assert(isSquared() && other.isSquared());
+    assert(getCol() == other.getRow());
+
+    int row = getRow();
+    int col = getCol();
+    int tmpRow = row;
+
+    for (int i = 0; i < row; i++)
+    {
+        for (int j = 0; j < col; j++)
+        {
+            double sum = 0;
+            for (int k = 0; k < tmpRow; k++)
+            {
+                sum += elem[i][k] * other.elem[k][j];
+            }
+            elem[i][j] = sum;
+        }
+    }
 }
 
 Matrix Matrix::operator/(const Matrix& other) const
@@ -620,4 +637,9 @@ double Matrix::operator[](int posIndex) const
 {
     assert(posIndex >= 0 && posIndex < getRow());
     return elem[posIndex][0];
+}
+
+bool Matrix::isSquared() const
+{
+    return getRow() == getCol();
 }

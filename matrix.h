@@ -7,6 +7,8 @@
 
 const int MATRIX_SINGULAR = -1;
 
+class Matrix;
+typedef Matrix Vector;
 
 typedef enum
 {
@@ -40,6 +42,7 @@ public:
     Matrix operator+(const Matrix& other) const;
     void operator+=(const Matrix& other);
     void operator*=(const double scaler);
+    void operator*=(const Matrix& other);
     Matrix operator-(const Matrix& other) const;
     bool operator<(const Matrix &matrix) const;
 
@@ -55,6 +58,7 @@ public:
     int getDetermine(); // 计算行列式
     int getRank(); // 计算矩阵的秩
     bool isFullRank() { return getRank() == getCol(); }
+    bool isSquared() const;
 
     // 扩充矩阵
     void pushStack(const Matrix& other, Stack_Direction_E direction);
