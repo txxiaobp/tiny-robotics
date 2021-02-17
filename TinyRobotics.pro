@@ -5,10 +5,13 @@ CONFIG -= qt
 
 SOURCES += \
         controller.cpp \
+        cubic_polynomial_planning.cpp \
         link.cpp \
         main.cpp \
         matrix.cpp \
+        motion_planning.cpp \
         pd_controller.cpp \
+        quintic_polynomial_planning.cpp \
         robot.cpp \
         scara.cpp \
         six_dof_robot.cpp \
@@ -17,10 +20,13 @@ SOURCES += \
 
 HEADERS += \
     controller.h \
+    cubic_polynomial_planning.h \
     link.h \
     matrix.h \
+    motion_planning.h \
     pd_controller.h \
     pub_include.h \
+    quintic_polynomial_planning.h \
     robot.h \
     scara.h \
     six_dof_robot.h \
