@@ -17,7 +17,7 @@ public:
                               std::vector<std::pair<double,double>> &accelConstraint);
     ~QuinticPolynomialPlanning() {}
 
-    void plan(std::vector<std::pair<double,double>> &posVec,
+    bool plan(std::vector<std::pair<double,double>> &posVec,
               std::vector<std::pair<double,double>> &velVec,
               std::vector<std::pair<double,double>> &accelVec);
 };

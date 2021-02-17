@@ -21,7 +21,7 @@ CubicPolynomialPlanning::CubicPolynomialPlanning(double timeIntervel,
     assert(accelConstraint[1].first == timeIntervel);
 }
 
-void CubicPolynomialPlanning::plan(std::vector<std::pair<double,double>> &posVec,
+bool CubicPolynomialPlanning::plan(std::vector<std::pair<double,double>> &posVec,
                                    std::vector<std::pair<double,double>> &velVec,
                                    std::vector<std::pair<double,double>> &accelVec)
 {
@@ -36,8 +36,6 @@ void CubicPolynomialPlanning::plan(std::vector<std::pair<double,double>> &posVec
     double a2 = 3 * (thetaf - theta0) / pow(timeIntervel, 2) - 2 * dTheta0 / timeIntervel - dThetaf / timeIntervel;
     double a3 = -2 * (thetaf - theta0) / pow(timeIntervel, 3) + (dTheta0 + dThetaf) / pow(timeIntervel, 2);
 
-    std::cout << a0 << " " << a1 << " " << a2 << " " << a3 << std::endl;
-
     posVec.clear();
     velVec.clear();
     accelVec.clear();
@@ -51,4 +49,6 @@ void CubicPolynomialPlanning::plan(std::vector<std::pair<double,double>> &posVec
         accelVec.push_back(std::make_pair(time, 2 * a2 + 6 * a3 * time));
         time = std::min(time + timeStep, timeIntervel);
     }
+
+    return true;
 }

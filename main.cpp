@@ -7,7 +7,7 @@
 #include "scara.h"
 #include "cubic_polynomial_planning.h"
 #include "quintic_polynomial_planning.h"
-
+#include "csv_operate.h"
 
 int main()
 {
@@ -31,10 +31,10 @@ int main()
 //    endVel.showMatrix();
 
 
-    double timeInterval = 3;
+    double timeInterval = 15;
     double timeStep = 0.1;
     double timeStart = 0;
-    double timeEnd = 3;
+    double timeEnd = timeInterval;
     double posStart = 15;
     double posEnd = 75;
     double velStart = 0;
@@ -52,12 +52,10 @@ int main()
     std::vector<std::pair<double,double>> posVec;
     std::vector<std::pair<double,double>> velVec;
     std::vector<std::pair<double,double>> accelVec;
-    //cubic.plan(posVec, velVec, accelVec);
-    quintic.plan(posVec, velVec, accelVec);
+    cubic.plan(posVec, velVec, accelVec);
+    //quintic.plan(posVec, velVec, accelVec);
 
-    for (auto pair : posVec)
-    {
-        std::cout << pair.first << " " << pair.second << std::endl;
-    }
+    CSVOperate().exportToFile(posVec);
+
     return 0;
 }

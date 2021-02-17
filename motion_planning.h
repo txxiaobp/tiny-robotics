@@ -12,7 +12,7 @@ public:
                    std::vector<std::pair<double,double>> &velConstraint,
                    std::vector<std::pair<double,double>> &accelConstraint);
     virtual ~MotionPlanning();
-    virtual void plan(std::vector<std::pair<double,double>> &posVec,
+    virtual bool plan(std::vector<std::pair<double,double>> &posVec,
                       std::vector<std::pair<double,double>> &velVec,
                       std::vector<std::pair<double,double>> &accelVec) = 0;
 

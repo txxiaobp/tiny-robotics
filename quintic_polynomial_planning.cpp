@@ -21,7 +21,7 @@ QuinticPolynomialPlanning::QuinticPolynomialPlanning(double timeIntervel,
     assert(accelConstraint[1].first == timeIntervel);
 }
 
-void QuinticPolynomialPlanning::plan(std::vector<std::pair<double,double>> &posVec,
+bool QuinticPolynomialPlanning::plan(std::vector<std::pair<double,double>> &posVec,
                                    std::vector<std::pair<double,double>> &velVec,
                                    std::vector<std::pair<double,double>> &accelVec)
 {
@@ -57,4 +57,6 @@ void QuinticPolynomialPlanning::plan(std::vector<std::pair<double,double>> &posV
         accelVec.push_back(std::make_pair(time, 2 * a2 + 6 * a3 * time + 12 * a4 * pow(time, 2) + 20 * a5 * pow(time, 3)));
         time = std::min(time + timeStep, timeIntervel);
     }
+
+    return true;
 }

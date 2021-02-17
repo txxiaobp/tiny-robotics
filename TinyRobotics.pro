@@ -5,6 +5,7 @@ CONFIG -= qt
 
 SOURCES += \
         controller.cpp \
+        csv_operate.cpp \
         cubic_polynomial_planning.cpp \
         link.cpp \
         main.cpp \
@@ -20,6 +21,7 @@ SOURCES += \
 
 HEADERS += \
     controller.h \
+    csv_operate.h \
     cubic_polynomial_planning.h \
     link.h \
     matrix.h \
