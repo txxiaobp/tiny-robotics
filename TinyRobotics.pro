@@ -7,6 +7,7 @@ SOURCES += \
         controller.cpp \
         csv_operate.cpp \
         cubic_polynomial_planning.cpp \
+        linear_with_parabola_transition_planning.cpp \
         link.cpp \
         main.cpp \
         matrix.cpp \
@@ -23,6 +24,7 @@ HEADERS += \
     controller.h \
     csv_operate.h \
     cubic_polynomial_planning.h \
+    linear_with_parabola_transition_planning.h \
     link.h \
     matrix.h \
     motion_planning.h \

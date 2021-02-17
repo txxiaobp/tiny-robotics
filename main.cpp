@@ -7,6 +7,7 @@
 #include "scara.h"
 #include "cubic_polynomial_planning.h"
 #include "quintic_polynomial_planning.h"
+#include "linear_with_parabola_transition_planning.h"
 #include "csv_operate.h"
 
 int main()
@@ -42,18 +43,34 @@ int main()
     double accelStart = 0;
     double accelEnd = 0;
 
-    std::vector<std::pair<double,double>> posConstraint{std::make_pair(timeStart, posStart), std::make_pair(timeEnd, posEnd)};
-    std::vector<std::pair<double,double>> velConstraint{std::make_pair(timeStart, velStart), std::make_pair(timeEnd, velEnd)};
-    std::vector<std::pair<double,double>> accelConstraint{std::make_pair(timeStart, accelStart), std::make_pair(timeEnd, accelEnd)};
+    std::vector<std::pair<double,double>> posConstraint
+        {
+            std::make_pair(0, 10),
+            std::make_pair(2, 35),
+            std::make_pair(3, 25),
+            std::make_pair(6, 10),
+        };
+    std::vector<std::pair<double,double>> velConstraint;
+    std::vector<std::pair<double,double>> accelConstraint;
 
-    CubicPolynomialPlanning cubic(timeInterval, timeStep, posConstraint, velConstraint, accelConstraint);
-    QuinticPolynomialPlanning quintic(timeInterval, timeStep, posConstraint, velConstraint, accelConstraint);
+//    std::vector<std::pair<double,double>> velConstraint{std::make_pair(timeStart, velStart), std::make_pair(timeEnd, velEnd)};
+//    std::vector<std::pair<double,double>> accelConstraint{std::make_pair(timeStart, accelStart), std::make_pair(timeEnd, accelEnd)};
+
+//    CubicPolynomialPlanning cubic(timeInterval, timeStep, posConstraint, velConstraint, accelConstraint);
+//    QuinticPolynomialPlanning quintic(timeInterval, timeStep, posConstraint, velConstraint, accelConstraint);
 
     std::vector<std::pair<double,double>> posVec;
     std::vector<std::pair<double,double>> velVec;
     std::vector<std::pair<double,double>> accelVec;
-    cubic.plan(posVec, velVec, accelVec);
+
+    //cubic.plan(posVec, velVec, accelVec);
     //quintic.plan(posVec, velVec, accelVec);
+
+    double maxAcceleration = 50;
+    LinearWithParabolaTransitionPlanning linearPlanning(timeInterval, timeStep, posConstraint, velConstraint, accelConstraint, maxAcceleration);
+
+
+    linearPlanning.plan(posVec, velVec, accelVec);
 
     CSVOperate().exportToFile(posVec);
 
