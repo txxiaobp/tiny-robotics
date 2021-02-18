@@ -26,7 +26,7 @@ public:
      * 1. 三个相邻关节轴线交于一点
      * 2. 三个相邻关节轴线相互平行
      */
-    virtual std::vector<double> inverseKinematics(Vector &endPos) = 0;
+    virtual std::vector<double> inverseKinematics(Matrix &endPos) = 0;
 
 
     PlanVec motionPlan(ConVec &posConVec, ConVec &velConVec);

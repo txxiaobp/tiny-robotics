@@ -19,9 +19,9 @@ public:
 protected:
     double timeIntervel;
     double timeStep;
-    std::vector<std::pair<double,double>> &posConstraint;
-    std::vector<std::pair<double,double>> &velConstraint;
-    std::vector<std::pair<double,double>> &accelConstraint;
+    std::vector<std::pair<double,double>> &posConstraint; // time, pos
+    std::vector<std::pair<double,double>> &velConstraint; // time, velocity
+    std::vector<std::pair<double,double>> &accelConstraint; // time, accelerate
 };
 
 #endif // MOTION_PLANNING_H

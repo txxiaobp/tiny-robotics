@@ -8,7 +8,7 @@ class Scara : public Robot
 public:
     Scara();
     ~Scara() {}
-    std::vector<double> inverseKinematics(Vector &endPos);
+    std::vector<double> inverseKinematics(Matrix &endPos);
 };
 
 #endif // SCARA_H
