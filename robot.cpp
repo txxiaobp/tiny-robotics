@@ -147,13 +147,5 @@ std::vector<double> Robot::getJointVelocity() const
     return velVec;
 }
 
-/*
- * posConVec：在某时刻，连杆位置应满足的约束条件
- * velConVec：在某时刻，连杆速度应满足的约束条件
- */
-PlanVec Robot::motionPlan(ConVec &posConVec, ConVec &velConVec)
-{
-
-}
 
 
