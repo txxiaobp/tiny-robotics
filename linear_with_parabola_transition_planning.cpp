@@ -46,12 +46,14 @@ bool LinearWithParabolaTransitionPlanning::plan(std::vector<std::pair<double,dou
     }
 
     calDurationVelocityAndAcceleration(tmptimeVec, tmpPosVec, tmpVelVec, tmpAccelVec);
+    tmpAccelVec[0].second *= 2;
+    tmpAccelVec.back().second *= 2;
 
     int timeCount = ceil(timeIntervel / timeStep) + 1;
     double time = 0;
-    double floorPosIndex = 0;
-
-    double timeIndex = 0;
+    int timeIndex = 0;
+    double floorPos = tmpPosVec[0];
+    double floorVelocity = 0;
     for (int i = 0; i < timeCount; i++, time += timeStep)
     {
         double accel = tmpAccelVec[timeIndex].first;
@@ -59,8 +61,21 @@ bool LinearWithParabolaTransitionPlanning::plan(std::vector<std::pair<double,dou
         double floorTime = tmptimeVec[timeIndex];
         double timeDuration = tmptimeVec[timeIndex + 1] - tmptimeVec[timeIndex];
 
-        while (time - floorTime > timeDuration)
+        if (time - floorTime >= timeDuration)
         {
+            double nextAccelTime = tmpAccelVec[timeIndex + 1].second;
+            double nextAccel = tmpAccelVec[timeIndex + 1].first;
+            double midTime = timeDuration - nextAccelTime / 2 - accelTime / 2;
+
+            floorPos = floorPos +
+                    floorVelocity * accelTime / 2 +
+                    0.5 * accel * pow(accelTime / 2, 2) +
+                    (floorVelocity + accel * accelTime / 2) * midTime +
+                    (floorVelocity + accel * accelTime / 2) * nextAccelTime / 2 +
+                    0.5 * nextAccel * pow(nextAccelTime / 2, 2);
+
+            floorVelocity = floorVelocity + accel * accelTime / 2 + nextAccel * nextAccelTime / 2;
+
             timeIndex++;
             accel = tmpAccelVec[timeIndex].first;
             accelTime = tmpAccelVec[timeIndex].second;
@@ -71,20 +86,30 @@ bool LinearWithParabolaTransitionPlanning::plan(std::vector<std::pair<double,dou
         double pos = 0;
         double nextFloorTime = tmptimeVec[timeIndex + 1];
         double nextAccelTime = tmpAccelVec[timeIndex + 1].second;
+
         if (time - floorTime <= accelTime / 2)
         {
-            pos = floorPos + 0.5 * accel * pow(time - floorTime, 2);
+            double tmpTime = time - floorTime;
+            pos = floorPos + floorVelocity * tmpTime + 0.5 * accel * pow(tmpTime, 2);
         }
         else if (time <= nextFloorTime - nextAccelTime / 2)
         {
-            pos = floorPos + 0.5 * accel * pow(accelTime, 2) + accel * accelTime * (time - floorTime);
+            pos = floorPos + floorVelocity * accelTime / 2 +
+                    0.5 * accel * pow(accelTime / 2, 2) +
+                    (floorVelocity + accel * accelTime / 2) * (time - (floorTime + accelTime / 2));
         }
         else
         {
             assert(time > nextFloorTime - nextAccelTime / 2);
             double nextAccel = tmpAccelVec[timeIndex + 1].first;
-            double tmpTime = timeDuration - nextAccelTime / 2 - accelTime / 2;
-            pos = floorPos + 0.5 * accel * pow(accelTime, 2) + accel * accelTime * tmpTime + 0.5 * nextAccel * pow(time - nextFloorTime + nextAccelTime / 2, 2);
+            double midTime = timeDuration - nextAccelTime / 2 - accelTime / 2;
+            double tmpTime = time - (nextFloorTime - nextAccelTime / 2);
+            pos = floorPos +
+                    floorVelocity * accelTime / 2 +
+                    0.5 * accel * pow(accelTime / 2, 2) +
+                    (floorVelocity + accel * accelTime / 2) * midTime +
+                    (floorVelocity + accel * accelTime / 2) * tmpTime +
+                    0.5 * nextAccel * pow(tmpTime, 2);
         }
         posVec.push_back(std::make_pair(time, pos));
     }

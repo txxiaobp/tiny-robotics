@@ -32,8 +32,8 @@ int main()
 //    endVel.showMatrix();
 
 
-    double timeInterval = 15;
-    double timeStep = 0.1;
+    double timeInterval = 6;
+    double timeStep = 0.01;
     double timeStart = 0;
     double timeEnd = timeInterval;
     double posStart = 15;
